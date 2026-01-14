@@ -61,5 +61,4 @@ The system follows a layered architecture:
 
 ---
 
-## 📁 Repository Structure
 
