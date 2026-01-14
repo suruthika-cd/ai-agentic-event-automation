@@ -1,0 +1,992 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 19
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1456,
+        288
+      ],
+      "id": "2b213d1b-6ded-4241-8add-0e58bda492c1",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "14-cX6d-7TFMUREqz0YqjoV_BzKXGQ8hmjx_DE0rV1d0",
+          "mode": "list",
+          "cachedResultName": "n8n",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14-cX6d-7TFMUREqz0YqjoV_BzKXGQ8hmjx_DE0rV1d0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/14-cX6d-7TFMUREqz0YqjoV_BzKXGQ8hmjx_DE0rV1d0/edit#gid=0"
+        },
+        "options": {
+          "returnFirstMatch": false
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1232,
+        288
+      ],
+      "id": "345b297f-eebd-45c0-9eb7-2cad08fc7519",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8VZWRipEb6PdQmu3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "59bd3dad-5776-4c0a-bd08-685c3d788d42",
+              "leftValue": "={{ $json['Attendence percentage'] }}",
+              "rightValue": 85,
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1008,
+        288
+      ],
+      "id": "f30fbd79-5711-4273-bb2a-dfa59e9d4446",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json['mail id'] }}",
+        "subject": "Low Attendance Alert - Action Required",
+        "emailType": "text",
+        "message": "=Hi {{ $('Get row(s) in sheet').item.json['Name'] }},\n\nThis is to inform you that your current attendance percentage is {{ $('Get row(s) in sheet').item.json['Attendence percentage'] }}%, which is below the required minimum.\n\nPlease take necessary action to improve your attendance.\n\nIf you have any concerns, please contact your academic advisor.\n\nBest regards,\nAutomated Attendance System",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        192
+      ],
+      "id": "a03f736d-6975-4d14-b5d9-23fd4ca67f36",
+      "name": "Send a message",
+      "webhookId": "64d612ec-84a9-492b-9e07-e23443dfb825",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Get row(s) in sheet').item.json['mail id'] }}",
+        "subject": "Attendance Status Update",
+        "emailType": "text",
+        "message": "=Hi {{$json[\"Name\"]}},\n\nYour current attendance is {{ $json['Attendence percentage'] }}%.\n\nPlease ensure you maintain the required attendance percentage.\n\nBest regards,\nAutomated Attendance System",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -784,
+        384
+      ],
+      "id": "81768123-0108-497b-91e4-03d88b333030",
+      "name": "Send a message1",
+      "webhookId": "b336ca80-c9b5-4be4-b9f8-68960d8f672b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1VYNbZshtG_syMQhI77XbbmR_Y8iJDWQNDlpoIf3th7k",
+          "mode": "list",
+          "cachedResultName": "Event Registration",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VYNbZshtG_syMQhI77XbbmR_Y8iJDWQNDlpoIf3th7k/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2099989855,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1VYNbZshtG_syMQhI77XbbmR_Y8iJDWQNDlpoIf3th7k/edit#gid=2099989855"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -32
+      ],
+      "id": "55b2e046-6bcf-48c4-8e9f-c41a0fb5375c",
+      "name": "Google Sheets Trigger",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "vp2MstanWcXUidYr",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Event Registration Confirmed 🎉",
+        "emailType": "text",
+        "message": "=Hi {{$json[\"Name\"]}},  Thank you for registering for the event!  Your registration has been successfully confirmed.  📌 Event: {{ $json['Event Intrested'] }}  📅 Date: 10 January 2026   📍 Venue: Main Auditorium   ⏰ Time: 10:00 AM    Please keep this email for future reference.  We look forward to seeing you at the event!  Best regards,   Event Coordination Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1232,
+        -32
+      ],
+      "id": "5b4e324a-4eb2-479b-ad1c-5ec1b4ac227f",
+      "name": "Send a message2",
+      "webhookId": "431d7ee9-e373-415b-bb06-1a3676515faf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendAndWait",
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Please Confirm Your Event Participation",
+        "message": "=Hi {{$json[\"Name\"]}},\n\nThank you for registering for the event.\n\nPlease confirm your participation by selecting one of the options below.\n\nBest regards,\nEvent Team",
+        "approvalOptions": {
+          "values": {
+            "approvalType": "double",
+            "approveLabel": "Yes, I will attend",
+            "disapproveLabel": "No, I cannot attend"
+          }
+        },
+        "options": {
+          "limitWaitTime": {
+            "values": {
+              "resumeAmount": 45,
+              "resumeUnit": "minutes"
+            }
+          },
+          "appendAttribution": true
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -1232,
+        -256
+      ],
+      "id": "60a7235a-cb0c-40e2-9f4a-749913e54501",
+      "name": "Send a message3",
+      "webhookId": "bf490705-0f8b-4535-96d1-f2b21338d921",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "a6ef841a-60f7-4094-9ca8-47b8bb33edbb",
+              "leftValue": "={{ $json['Are you comming to the event'] }}",
+              "rightValue": "NO",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -784,
+        -256
+      ],
+      "id": "8e7fbafb-d25d-415e-ae92-5349dc403c1e",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g",
+          "mode": "list",
+          "cachedResultName": "Event confirmation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 169517769,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit#gid=169517769"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -1008,
+        -256
+      ],
+      "id": "b5d5c7d3-e187-402b-99c7-1e0eff7798d7",
+      "name": "Get row(s) in sheet2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8VZWRipEb6PdQmu3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "delete",
+        "documentId": {
+          "__rl": true,
+          "value": "1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g",
+          "mode": "list",
+          "cachedResultName": "Event confirmation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 169517769,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit#gid=169517769"
+        },
+        "startIndex": "={{ $('Get row(s) in sheet2').item.json.row_number }}"
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -560,
+        -256
+      ],
+      "id": "67fc7056-a738-4154-9cca-fe307bc104b2",
+      "name": "Delete rows or columns from sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "8VZWRipEb6PdQmu3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "75fb8b41-540a-41f7-b556-1c7773817ebc",
+              "name": "html",
+              "value": "=<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\" />\n  <style>\n    body {\n      width: 1123px;\n      height: 794px;\n      margin: 0;\n      padding: 0;\n      background-image: url(\"https://raw.githubusercontent.com/suruthika04/suruthika--profile/main/Dark%20Blue%20And%20Gold%20Elegant%20Achievement%20Certificate%20Template.png\");\n      background-size: cover;\n      background-position: center;\n      font-family: \"Georgia\", serif;\n      color: #1f1f1f;\n    }\n\n    .content {\n      position: absolute;\n      top: 410px;\n      width: 100%;\n      text-align: center;\n      padding: 0 120px;\n      box-sizing: border-box;\n    }\n\n    .presented {\n      font-size: 16px;\n      letter-spacing: 2px;\n      color: #555;\n      margin-bottom: 12px;\n    }\n\n    .name {\n      font-size: 46px;\n      font-weight: bold;\n      margin-bottom: 18px;\n    }\n\n    .achievement {\n      font-size: 18px;\n      line-height: 1.6;\n      margin-bottom: 22px;\n      color: #333;\n    }\n\n    .event {\n      font-size: 24px;\n      font-weight: bold;\n      margin-bottom: 10px;\n    }\n\n    .date {\n      font-size: 16px;\n      color: #444;\n    }\n  </style>\n</head>\n\n<body>\n  <div class=\"content\">\n    <div class=\"presented\">PROUDLY PRESENTED TO</div>\n\n    <div class=\"name\">\n      {{ $('Google Sheets Trigger1').item.json['Full Name'] }}\n    </div>\n\n    <div class=\"achievement\">\n      For successfully completing and actively participating in this program,\n      demonstrating strong commitment, dedication, and practical understanding\n      of the subject.\n    </div>\n\n    <div class=\"event\">\n      {{ $('Google Sheets Trigger1').item.json['Role You Are Applying For'] }}\n    </div>\n\n    <div class=\"date\">\n      Date: {{ $('Google Sheets Trigger1').item.json.Timestamp }}\n    </div>\n  </div>\n</body>\n</html>",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -1232,
+        -480
+      ],
+      "id": "10859a33-269d-40a5-af5f-d3ec6a9f7746",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "html_content": "={{ $json.html }}",
+        "viewPortWidth": 1123,
+        "viewPortHeight": 794,
+        "response_format_html": "png"
+      },
+      "type": "n8n-nodes-htmlcsstoimage.htmlCssToImage",
+      "typeVersion": 1,
+      "position": [
+        -1008,
+        -480
+      ],
+      "id": "e0b8941f-657a-4fc6-a76a-30540f6ee565",
+      "name": "HTML/CSS to Image",
+      "credentials": {
+        "htmlcsstoimgApi": {
+          "id": "yNE6I1N3yFNTO6GV",
+          "name": "Htmlcsstoimg account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Google Sheets Trigger1').item.json['Emai; id'] }}",
+        "subject": "Your Certificate – Machine Learning Workshop 🎉",
+        "emailType": "text",
+        "message": "=Hi {{ $('Google Sheets Trigger1').item.json.Name }},  Congratulations! 🎉   Your participation certificate for the Machine Learning Workshop is ready.  Thank you for being an active participant and showing great interest in the session. Your certificate is attached with this email.  Keep learning and exploring new technologies!  Best wishes,   Workshop Team  \nDr.MCET",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -560,
+        -480
+      ],
+      "id": "3fb9121c-ee0c-4b9d-bd8b-516ec768f99c",
+      "name": "Send a message4",
+      "webhookId": "5d74d4b7-5c28-44b6-9f45-5348b92c4083",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.image_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -784,
+        -480
+      ],
+      "id": "01363852-af2b-469b-989c-78a8958131a1",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "content": "In cerificate edit fiels add event registered accoeding to the form\n"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        464,
+        -288
+      ],
+      "typeVersion": 1,
+      "id": "4c3a987a-2c9c-421c-bf72-453cbd7706e9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1K1AwnSodJfNgTPFeXv9wcKr8L9iE9GBQrPgeGhK3jmk",
+          "mode": "list",
+          "cachedResultName": "Attendence Sheet",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K1AwnSodJfNgTPFeXv9wcKr8L9iE9GBQrPgeGhK3jmk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1185147472,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1K1AwnSodJfNgTPFeXv9wcKr8L9iE9GBQrPgeGhK3jmk/edit#gid=1185147472"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -480
+      ],
+      "id": "d3170719-6e0c-4765-a90d-6df9b70b5015",
+      "name": "Google Sheets Trigger1",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "vp2MstanWcXUidYr",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g",
+          "mode": "list",
+          "cachedResultName": "Event confirmation",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 169517769,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1I8h7z80RdxYO6bNmh--mtHRJ928fS7dsKD20YZl7s0g/edit#gid=169517769"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -256
+      ],
+      "id": "3529b0ee-8d8b-4669-a1fe-21e026a0c473",
+      "name": "Google Sheets Trigger2",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "vp2MstanWcXUidYr",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1KoRQttZbz8pjn1YUz9T75t4F9E3wuQqGDGVMqsSscjo",
+          "mode": "list",
+          "cachedResultName": "ATS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KoRQttZbz8pjn1YUz9T75t4F9E3wuQqGDGVMqsSscjo/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 112729345,
+          "mode": "list",
+          "cachedResultName": "Form responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1KoRQttZbz8pjn1YUz9T75t4F9E3wuQqGDGVMqsSscjo/edit#gid=112729345"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -800
+      ],
+      "id": "93fe36d4-6c29-4b33-b557-82679d9eb284",
+      "name": "Google Sheets Trigger3",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "vp2MstanWcXUidYr",
+          "name": "Google Sheets Trigger account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "copy",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $json['Upload Your Resume (PDF Only)'].split(\"id=\")[1] }}",
+          "mode": "id"
+        },
+        "name": "={{ $json['Full Name'] + '_Resume' }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1232,
+        -800
+      ],
+      "id": "f143fa0e-347f-466a-bf36-e57f72df8f36",
+      "name": "Copy file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "no4O9E3e1VS9zNPH",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "={{ $('Google Sheets Trigger3').item.json['Upload Your Resume (PDF Only)'].split(\"id=\")[1] }}",
+          "mode": "id"
+        },
+        "options": {
+          "binaryPropertyName": "data"
+        }
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -1008,
+        -800
+      ],
+      "id": "7b5f7eeb-da80-49cd-af83-c532cf12955f",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "no4O9E3e1VS9zNPH",
+          "name": "Google Drive account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {
+          "joinPages": true
+        }
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -784,
+        -800
+      ],
+      "id": "21d6efb1-e32e-4c96-9a1b-36baa5a88c47",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://aiyana-phrenologic-unscowlingly.ngrok-free.dev/analyze-resume",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "resume_text",
+              "value": "={{ $json.text }}"
+            },
+            {
+              "name": "target_role",
+              "value": "AI / ML Intern"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        -560,
+        -800
+      ],
+      "id": "9eb3bae4-58b9-43ca-b6f9-cf6fde0fb8f9",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "sendTo": "suruthika908@gmail.com",
+        "subject": "jiih",
+        "message": "=Hello HR Team,  The following candidate has been shortlisted by the AI screening system.  ATS Score: {{ $('HTTP Request1').item.json.score }} Resume link:  {{ $('Copy file').item.json.name }} Regards, AI Recruitment Agent",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -896
+      ],
+      "id": "9fd6e5f5-dba1-49ca-b8dc-212550b60e59",
+      "name": "Send a message5",
+      "webhookId": "43eb032b-6c78-4db3-9650-93bf286b92f9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1c70f740-7d79-4f69-9264-ebf1819e4a7c",
+              "leftValue": "={{ $('HTTP Request1').item.json.decision }}",
+              "rightValue": "SHORTLIST",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -336,
+        -800
+      ],
+      "id": "249a07a5-44cd-4b4f-b20f-527e0e34e8cd",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Google Sheets Trigger3').item.json['Email Address'] }}",
+        "subject": "Update on Your Application",
+        "message": "=Hello {{ $('Google Sheets Trigger3').item.json['Full Name'] }},  Thank you for taking the time to apply and for your interest in the opportunity.  After careful review of your profile, we regret to inform you that your application has not been shortlisted at this stage.  This decision does not reflect your potential or abilities. We encourage you to continue applying for future opportunities that match your skills and interests.  We wish you every success in your career journey.  Regards,   Recruitment Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -112,
+        -704
+      ],
+      "id": "3de0ef78-99ab-48a7-8e4a-52e4af97ac81",
+      "name": "Send a message6",
+      "webhookId": "3569e698-e1c6-4e71-babb-16abc5542fbe",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "HHTGi8rvitXW3IE4",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger": {
+      "main": [
+        [
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message3": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet2": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Delete rows or columns from sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTML/CSS to Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML/CSS to Image": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Send a message4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger2": {
+      "main": [
+        [
+          {
+            "node": "Send a message3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets Trigger3": {
+      "main": [
+        [
+          {
+            "node": "Copy file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Copy file": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Send a message5",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message5": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "b50ebbb3-d1d6-4ca3-8819-2a1ed97df6a3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c565cceb22a5c9a52c2c6446cb815ca0240f373916c14b8d3f60b005b6bd31b8"
+  },
+  "id": "Ki3OgUvCkB0KRJok",
+  "tags": []
+}
